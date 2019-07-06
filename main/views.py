@@ -31,3 +31,14 @@ class ServiceByCompanyIdAndSlugView(APIView):
             else:
                 return Response({'data': 'not found'})
 
+class WrongServiceByCompanyIdAndSlugView(APIView):
+        def get(self, request, pk, title):
+            services = Service.objects.filter(tsj_id = pk, breakdown = category[title])
+            if services:
+                serializer = ServiceSerializer(services, many = True)
+                for item in serializer.data:
+                    if item["status"] == "not done":
+                        return Response({'flag': False})
+                return Response({'flag': True})
+            else:
+                return Response({'data': 'not found'})
